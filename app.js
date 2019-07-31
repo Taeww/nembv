@@ -4,6 +4,7 @@ var path = require('path');
 const favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const mongoose = require('mongoose');
 
 var app = express();
 
@@ -35,6 +36,18 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render({ success: false, msg: err.message });
+});
+
+const cfg = require('./cfg/cfg');
+
+if(!cfg){
+  console.log('./cfg/cfg.js is not exist!');
+  process.exit(1);
+}
+
+mongoose.connect(cfg.db.url, (err) => {
+  if(err) return console.log(err);
+  console.log('monggodb connection');
 });
 
 module.exports = app;
